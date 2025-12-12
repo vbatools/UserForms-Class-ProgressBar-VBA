@@ -2,6 +2,8 @@
 
 A comprehensive VBA class for displaying a customizable progress bar during long-running operations in Excel or other Office applications.
 
+![Demo project](User_Forms.gif)
+
 ## Overview
 
 The `clsProgresBar` class provides an easy-to-use interface for displaying progress during long-running operations. It features a clean, customizable interface with support for dual messages, visual indicators, and user cancellation.
