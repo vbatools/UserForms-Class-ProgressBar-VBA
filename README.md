@@ -14,6 +14,8 @@ The `clsProgresBar` class provides an easy-to-use interface for displaying progr
 - **Customizable Appearance**: Configurable symbols, colors, and dimensions
 - **Performance Optimized**: Efficient updates to minimize UI lag
 - **Error Handling**: Comprehensive error management and reporting
+- **Time Tracking**: Built-in timer to track operation duration
+- **Logging Capability**: Automatic logging of progress events
 
 ## Installation
 
@@ -31,13 +33,14 @@ Sub ExampleUsage()
     Set oProg = New clsProgresBar
     
     ' Initialize the progress bar
-    oProg.Initialize "Processing data...", "Data Processing", True, ">"
+    oProg.Initialize "Processing data...", "Data Processing", "Initializing...", _
+                     enumTypeCaptionLabel.enProcent, 100
     
     ' Simulate a long-running operation
     Dim i As Long
-    For i = 1 To 1000
+    For i = 1 To 100
         ' Update progress bar
-        oProg.Update i, 1000, "Processing item " & i
+        oProg.Update i / 10, "Processing item " & i
     Next i
     
     Set oProg = Nothing
@@ -52,23 +55,27 @@ Sub AdvancedExample()
     Set oProg = New clsProgresBar
     
     ' Initialize with custom settings
-    oProg.Initialize "Loading files...", "File Loader", True, "*"
-    
-    ' Customize colors
-    oProg.lProgressColor = RGB(0, 128, 255) ' Blue progress line
-    oProg.lPictColor = RGB(255, 165, 0)     ' Orange symbol
+    oProg.Initialize "Loading files...", "File Loader", "Starting up...", _
+                     enumTypeCaptionLabel.enAll, 500, RGB(0, 128, 255), RGB(20, 200, 200), "|", True, "*"
     
     ' Resize the progress bar
-    oProg.Resize 600, 40, 30
+    oProg.Resize 600, 40, 30, 20
     
     ' Process with progress updates
     Dim i As Long
     For i = 1 To 500
-        oProg.Update i, 500, "File " & i & " of 500"
+        If oProg.Update(i / 500, "File " & i & " of 500") Then
+            ' User requested cancellation
+            Exit For
+        End If
         
         ' Add delay to simulate work
         Application.Wait Now + TimeValue("0:00:01")
     Next i
+    
+    ' Access log data if needed
+    Dim logData As Variant
+    logData = oProg.LogData
     
     Set oProg = Nothing
 End Sub
@@ -76,33 +83,66 @@ End Sub
 
 ## API Reference
 
+### Enums
+
+#### `enumTypeCaptionLabel`
+Defines the type of information displayed on the progress bar:
+- `enNone`: No information displayed
+- `enProcent`: Percentage only
+- `enValue`: Current/Total values
+- `enTime`: Elapsed time
+- `enProcentValue`: Percentage and value
+- `enProcentTime`: Percentage and elapsed time
+- `enValuTime`: Value and elapsed time
+- `enAll`: All information types
+
+#### `enumParametrVersion`
+Provides access to version information:
+- `enName`: Class name
+- `enAuthor`: Author name
+- `enVersion`: Version string
+- `enLicense`: License information
+- `enDateOfCreation`: Creation date
+- `enDateOfUpdate`: Last update date
+- `enDescription`: Description text
+- `enAll`: All version information
+
 ### Methods
 
-#### `Initialize(sMessage As String, sHeader As String, Optional bShowPict As Boolean = False, Optional sPict As String = vbNullString)`
+#### `Initialize(sHeaderCaption As String, sMessageTop As String, sMessageBottom As String, TypeCaptionLabel As enumTypeCaptionLabel, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1, Optional sLineFrontSimvol As String = "|", Optional bPictureShow As Boolean = False, Optional sPictureSimvol As String = vbNullString)`
 Initializes the progress bar with specified parameters.
 
-- `sMessage`: Message to display in the top message area
-- `sHeader`: Header text for the form
-- `bShowPict`: Whether to show the symbol/picture indicator
-- `sPict`: Symbol/picture to display
+- `sHeaderCaption`: Text for the form caption
+- `sMessageTop`: Message to display in the top message area
+- `sMessageBottom`: Message to display in the bottom message area
+- `TypeCaptionLabel`: Type of information to display
+- `CountItems`: Total number of items for progress calculation
+- `LineFrontColor`: Color of the front progress line
+- `LineBackColor`: Color of the back progress line
+- `sLineFrontSimvol`: Character to use for the progress line
+- `bPictureShow`: Whether to show the progress indicator symbol
+- `sPictureSimvol`: Symbol to display at the progress position
 
-#### `Update(i As Long, iCount As Long, sMsg As String)`
-Updates the progress bar with new values.
+#### `Update(procent As Single, sMessageBottom As String, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean`
+Updates the progress bar with new values and returns True if user requested cancellation.
 
-- `i`: Current step number
-- `iCount`: Total number of steps
-- `sMsg`: Message to display in the bottom message area
+- `procent`: Progress percentage (0.0 to 1.0)
+- `sMessageBottom`: Message to display in the bottom message area
+- `CountItems`: Total number of items (optional)
+- `LineFrontColor`: New color for front progress line (optional)
+- `LineBackColor`: New color for back progress line (optional)
 
-#### `Resize(Width As Double, HeightMessage As Double, HeightMessageTwo As Double)`
+#### `Resize(WidthForm As Single, HeightMessageTop As Single, HeightMessageBottom As Single, HeightLineProgres As Single)`
 Changes the size of the progress bar.
 
-- `Width`: Form width
-- `HeightMessage`: Top message height
-- `HeightMessageTwo`: Bottom message height
+- `WidthForm`: Form width
+- `HeightMessageTop`: Top message height
+- `HeightMessageBottom`: Bottom message height
+- `HeightLineProgres`: Progress line height
 
 ### Properties
 
-#### `Header As String`
+#### `HeaderCaption As String`
 Gets or sets the form header text.
 
 #### `MessageTop As String`
@@ -111,24 +151,36 @@ Gets or sets the top message text.
 #### `MessageBottom As String`
 Gets or sets the bottom message text.
 
-#### `ShowPict As Boolean`
-Gets or sets the visibility of the symbol/picture indicator.
+#### `PictureShow As Boolean`
+Gets or sets the visibility of the progress indicator symbol.
 
-#### `sPict As String`
-Gets or sets the symbol/picture text.
+#### `PictureSimvol As String`
+Gets or sets the progress indicator symbol text.
 
-#### `lPictColor As Long`
-Gets or sets the color of the symbol/picture indicator.
+#### `PictureColor As XlRgbColor`
+Gets or sets the color of the progress indicator symbol.
 
-#### `lProgressColor As Long`
+#### `LineFrontColor As XlRgbColor`
 Gets or sets the color of the progress line.
+
+#### `LineBackColor As XlRgbColor`
+Gets or sets the color of the progress line background.
+
+#### `TimeWork As Date`
+Gets the elapsed time since initialization.
+
+#### `TypeCaptionLabel As enumTypeCaptionLabel`
+Gets or sets the type of caption label.
+
+#### `LogData As Variant`
+Gets the log data array containing progress events.
 
 ## Error Handling
 
-The class includes comprehensive error handling:
-
-- Division by zero in the Update method raises error 1001
-- Invalid parameters in the Resize method raise error 1002
+The class handles potential errors gracefully:
+- Invalid percentage values are normalized to the 0-1 range
+- Division by zero is prevented in calculations
+- Proper cleanup occurs in the Class_Terminate event
 
 ## Customization
 
@@ -139,14 +191,16 @@ The progress bar can be customized in several ways:
 - Visibility of the indicator symbol
 - Header and message text
 - Progress indicator symbol
+- Type of information displayed (percentage, values, time, etc.)
 
 ## Performance
 
 The implementation is optimized for performance by:
 
-- Only updating UI elements when values change
-- Efficient string operations
-- Minimal use of expensive operations during updates
+- Efficient UI updates
+- Proper memory management
+- Minimizing expensive operations during updates
+- Using DoEvents to maintain UI responsiveness
 
 ## License
 
