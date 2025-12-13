@@ -1,5 +1,7 @@
 # Класс VBA Progress Bar
 
+**Русский** | [English](README.md) | [UserForms-Class-ALL](https://github.com/vbatools/UserForms-Class-ALL/blob/main/README_RUS.md)
+
 Класс VBA для отображения настраиваемой полосы прогресса во время длительных операций в Excel или других приложениях Office.
 
 ![Демонстрация проекта](User_Forms.gif)
