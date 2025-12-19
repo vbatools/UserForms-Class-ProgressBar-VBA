@@ -178,7 +178,6 @@ Public Sub Initialize(ByRef sHeaderCaption As String, _
         ByRef sMessageTop As String, _
         ByRef sMessageBottom As String, _
         ByRef TypeCaptionLabel As enumTypeCaptionLabel, _
-        Optional CountItems As Long = 0, _
         Optional LineFrontColor As XlRgbColor = -1, _
         Optional LineBackColor As XlRgbColor = -1, _
         Optional sLineFrontSimvol As String = "|", _
@@ -187,7 +186,6 @@ Public Sub Initialize(ByRef sHeaderCaption As String, _
 
     Set mFrmForma = Forma()
     mTypeCaptionLabel = TypeCaptionLabel
-    mCountItems = CountItems
     mTimeStart = VBA.Now()
     With mFrmForma
         .Caption = sHeaderCaption
@@ -269,7 +267,7 @@ Public Sub Resize(ByVal WidthForm As Single, _
     End With
 End Sub
 
-Public Function Update(ByVal procent As Single, ByVal sMessageBottom As String, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean
+Public Function Update(ByVal procent As Single, ByVal sMessageBottom As String, ByVal CountItems As Long, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean
 
     Select Case procent
         Case Is < 0:
@@ -284,16 +282,15 @@ Public Function Update(ByVal procent As Single, ByVal sMessageBottom As String, 
         If .lbPict.Visible Then .lbPict.Left = .lbLineFront.Left + .lbLineFront.Width - 5
         If LineFrontColor <> -1 Then .lbLineFront.BackColor = LineFrontColor
         If LineBackColor <> -1 Then .lbLineBack.BackColor = LineBackColor
-        If mCountItems <> CountItems And CountItems > 1 Then mCountItems = CountItems
+        mCountItems = CountItems
         .lbProcent.Caption = getCaptionLabel(mTypeCaptionLabel, procent, mCountItems)
-
 
         .lbProcent.ZOrder 0
         .lbPict.ZOrder 0
         .Repaint
         DoEvents
 
-        If mStep = 0 Then ReDim mLogArr(1 To 1 / procent, 1 To 3)
+        If mStep = 0 Then ReDim mLogArr(1 To mCountItems, 1 To 3)
         mStep = mStep + 1
         mLogArr(mStep, 1) = sMessageBottom
         mLogArr(mStep, 2) = VBA.Time

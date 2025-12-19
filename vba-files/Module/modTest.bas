@@ -10,18 +10,21 @@ Public Declare Sub Sleep Lib "kernel32" (ByVal Milliseconds As LongPtr)
 Sub testProgressBar()
     Dim oProg       As clsProgresBar
     Set oProg = New clsProgresBar
-    Call oProg.Initialize("text_header", "text msg top", "text msg bottom", enumTypeCaptionLabel.enAll, 300, rgbAzure, rgbWheat, vbNullString, True, "o")
+    Call oProg.Initialize("text_header", "text msg top", "text msg bottom", enumTypeCaptionLabel.enAll, rgbAzure, rgbWheat, vbNullString, True, "o")
 
-    Call oProg.Resize(800, 50, 50, 22)
+    Call oProg.Resize(500, 50, 50, 22)
 
     Dim i           As Long
     For i = 1 To 300 Step 5
-        If oProg.Update(i / 300, "text msg bottom_" & i) Then
+        If oProg.Update(i / 300, "text msg bottom_" & i, 300) Then
             Set oProg = Nothing
             Exit For
         End If
-        Call Sleep(50)
-'        oProg.TypeCaptionLabel = enAll
+        Call Sleep(100)
+        If i > 150 Then
+            oProg.MessageTop = "New size"
+            Call oProg.Resize(500, 80, 20, 5)
+        End If
     Next i
     Dim arr         As Variant
     If Not oProg Is Nothing Then
