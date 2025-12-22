@@ -68,11 +68,11 @@ Sub AdvancedExample()
     ' Process with progress updates
     Dim i As Long
     For i = 1 To 500
-        If oProg.Update(i / 500, "File " & i & " of 500") Then
-            ' User requested cancellation
+        If oProg.Update(i / 500, "File " & i & " of 500", 500) Then
+            ' User requested cancellation (Update returned True)
             Exit For
         End If
-        
+        ' When Update returns False, continue with the operation
         ' Add delay to simulate work
         Application.Wait Now + TimeValue("0:00:01")
     Next i
@@ -113,26 +113,25 @@ Provides access to version information:
 
 ### Methods
 
-#### `Initialize(sHeaderCaption As String, sMessageTop As String, sMessageBottom As String, TypeCaptionLabel As enumTypeCaptionLabel, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1, Optional sLineFrontSimvol As String = "|", Optional bPictureShow As Boolean = False, Optional sPictureSimvol As String = vbNullString)`
+#### `Initialize(sHeaderCaption As String, sMessageTop As String, sMessageBottom As String, TypeCaptionLabel As enumTypeCaptionLabel, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1, Optional sLineFrontSimvol As String = "|", Optional bPictureShow As Boolean = False, Optional sPictureSimvol As String = vbNullString)`
 Initializes the progress bar with specified parameters.
 
 - `sHeaderCaption`: Text for the form caption
 - `sMessageTop`: Message to display in the top message area
 - `sMessageBottom`: Message to display in the bottom message area
 - `TypeCaptionLabel`: Type of information to display
-- `CountItems`: Total number of items for progress calculation
-- `LineFrontColor`: Color of the front progress line
-- `LineBackColor`: Color of the back progress line
-- `sLineFrontSimvol`: Character to use for the progress line
-- `bPictureShow`: Whether to show the progress indicator symbol
-- `sPictureSimvol`: Symbol to display at the progress position
+- `LineFrontColor`: Color of the front progress line (optional)
+- `LineBackColor`: Color of the back progress line (optional)
+- `sLineFrontSimvol`: Character to use for the progress line (optional)
+- `bPictureShow`: Whether to show the progress indicator symbol (optional)
+- `sPictureSimvol`: Symbol to display at the progress position (optional)
 
-#### `Update(procent As Single, sMessageBottom As String, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean`
-Updates the progress bar with new values and returns True if user requested cancellation.
+#### `Update(procent As Single, sMessageBottom As String, CountItems As Long, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean`
+Updates the progress bar with new values and returns True if user requested cancellation, False otherwise.
 
 - `procent`: Progress percentage (0.0 to 1.0)
 - `sMessageBottom`: Message to display in the bottom message area
-- `CountItems`: Total number of items (optional)
+- `CountItems`: Total number of items (required)
 - `LineFrontColor`: New color for front progress line (optional)
 - `LineBackColor`: New color for back progress line (optional)
 

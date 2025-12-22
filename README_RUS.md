@@ -68,11 +68,11 @@ Sub AdvancedExample()
     ' Обработка с обновлениями прогресса
     Dim i As Long
     For i = 1 To 500
-        If oProg.Update(i / 500, "Файл " & i & " из 500") Then
-            ' Пользователь запросил отмену
+        If oProg.Update(i / 500, "Файл " & i & " из 500", 500) Then
+            ' Пользователь запросил отмену (Update вернул True)
             Exit For
         End If
-        
+        ' Когда Update возвращает False, продолжаем выполнение операции
         ' Добавить задержку для симуляции работы
         Application.Wait Now + TimeValue("0:00:01")
     Next i
@@ -113,26 +113,25 @@ End Sub
 
 ### Методы
 
-#### `Initialize(sHeaderCaption As String, sMessageTop As String, sMessageBottom As String, TypeCaptionLabel As enumTypeCaptionLabel, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1, Optional sLineFrontSimvol As String = "|", Optional bPictureShow As Boolean = False, Optional sPictureSimvol As String = vbNullString)`
+#### `Initialize(sHeaderCaption As String, sMessageTop As String, sMessageBottom As String, TypeCaptionLabel As enumTypeCaptionLabel, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1, Optional sLineFrontSimvol As String = "|", Optional bPictureShow As Boolean = False, Optional sPictureSimvol As String = vbNullString)`
 Инициализирует полосу прогресса с указанными параметрами.
 
 - `sHeaderCaption`: Текст для заголовка формы
 - `sMessageTop`: Сообщение для отображения в верхней области сообщений
 - `sMessageBottom`: Сообщение для отображения в нижней области сообщений
 - `TypeCaptionLabel`: Тип отображаемой информации
-- `CountItems`: Общее количество элементов для расчета прогресса
-- `LineFrontColor`: Цвет передней линии прогресса
-- `LineBackColor`: Цвет фоновой линии прогресса
-- `sLineFrontSimvol`: Символ для использования в линии прогресса
-- `bPictureShow`: Показывать ли символ индикатора прогресса
-- `sPictureSimvol`: Символ для отображения в позиции прогресса
+- `LineFrontColor`: Цвет передней линии прогресса (необязательно)
+- `LineBackColor`: Цвет фоновой линии прогресса (необязательно)
+- `sLineFrontSimvol`: Символ для использования в линии прогресса (необязательно)
+- `bPictureShow`: Показывать ли символ индикатора прогресса (необязательно)
+- `sPictureSimvol`: Символ для отображения в позиции прогресса (необязательно)
 
-#### `Update(procent As Single, sMessageBottom As String, Optional CountItems As Long = 0, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean`
-Обновляет полосу прогресса новыми значениями и возвращает True, если пользователь запросил отмену.
+#### `Update(procent As Single, sMessageBottom As String, CountItems As Long, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean`
+Обновляет полосу прогресса новыми значениями и возвращает True, если пользователь запросил отмену, иначе False.
 
 - `procent`: Процент прогресса (0.0 до 1.0)
 - `sMessageBottom`: Сообщение для отображения в нижней области сообщений
-- `CountItems`: Общее количество элементов (необязательно)
+- `CountItems`: Общее количество элементов (обязательно)
 - `LineFrontColor`: Новый цвет передней линии прогресса (необязательно)
 - `LineBackColor`: Новый цвет фоновой линии прогресса (необязательно)
 
