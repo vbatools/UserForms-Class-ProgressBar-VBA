@@ -52,7 +52,7 @@ End Enum
 
 ' Returns version information based on the specified parameter
 Public Function Version(ByVal Parametr As enumParametrVersion) As String
-    Dim sRes As String
+    Dim sRes        As String
     Select Case Parametr
         Case enumParametrVersion.enAll:
             Dim i   As Byte
@@ -267,8 +267,16 @@ Public Sub Resize(ByVal WidthForm As Single, _
     End With
 End Sub
 
-Public Function Update(ByVal procent As Single, ByVal sMessageBottom As String, ByVal CountItems As Long, Optional LineFrontColor As XlRgbColor = -1, Optional LineBackColor As XlRgbColor = -1) As Boolean
+Public Function Update(ByVal item As Long, _
+        ByVal sMessageBottom As String, _
+        Optional CountItems As Long = 0, _
+        Optional LineFrontColor As XlRgbColor = -1, _
+        Optional LineBackColor As XlRgbColor = -1) As Boolean
 
+    
+    Dim procent As Single
+    If mCountItems <> CountItems And CountItems > 1 Then mCountItems = CountItems
+    procent = item / mCountItems
     Select Case procent
         Case Is < 0:
             procent = 0

@@ -16,7 +16,7 @@ Sub testProgressBar()
 
     Dim i           As Long
     For i = 1 To 300 Step 5
-        If oProg.Update(i / 300, "text msg bottom_" & i, 300) Then
+        If oProg.Update(i, "text msg bottom_" & i, 300) Then
             Set oProg = Nothing
             Exit For
         End If
