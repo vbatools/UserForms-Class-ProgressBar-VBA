@@ -268,14 +268,14 @@ Public Sub Resize(ByVal WidthForm As Single, _
 End Sub
 
 Public Function Update(ByVal item As Long, _
+        ByVal CountItems As Long, _
         ByVal sMessageBottom As String, _
-        Optional CountItems As Long = 0, _
         Optional LineFrontColor As XlRgbColor = -1, _
         Optional LineBackColor As XlRgbColor = -1) As Boolean
 
     
     Dim procent As Single
-    If mCountItems <> CountItems And CountItems > 1 Then mCountItems = CountItems
+    mCountItems = CountItems
     procent = item / mCountItems
     Select Case procent
         Case Is < 0:
